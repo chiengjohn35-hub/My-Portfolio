@@ -1,7 +1,11 @@
+
+
+
 services:
-  - type: web
-    name: my-portfolio
+  - name: My Portfolio
     env: python
-    plan: free
-    buildCommand: bash render-build.sh
-    startCommand: gunicorn backend.wsgi:application --workers 3 --bind 0.0.0.0:$PORT
+    region: oregon
+    branch: main
+    buildCommand: "pip install -r requirements.txt && cd my-app && npm ci && npm run build && cd .. && python backend/manage.py collectstatic --noinput && python backend/manage.py migrate"
+    startCommand: "gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT"
+    instanceType: starter
