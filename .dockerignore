@@ -1,0 +1,16 @@
+.venv
+__pycache__
+*.pyc
+.git
+node_modules
+my-app/node_modules
+dist
+build
+venv
+*.sqlite3
+*.log
+env
+ENV
+*.pem
+*.key
+frontend/dist

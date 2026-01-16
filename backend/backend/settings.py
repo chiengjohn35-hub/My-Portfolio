@@ -18,6 +18,7 @@ from django.core.exceptions import ImproperlyConfigured
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -38,7 +39,10 @@ if not SECRET_KEY:
 # DEBUG should be explicitly set to 'True' in development via env
 DEBUG = get_env_setting('DJANGO_DEBUG', default='False') == 'True'
 
-ALLOWED_HOSTS = get_env_setting('DJANGO_ALLOWED_HOSTS', default='').split(',') if get_env_setting('DJANGO_ALLOWED_HOSTS') else []
+ALLOWED_HOSTS = get_env_setting('DJANGO_ALLOWED_HOSTS', default='').split(',') if get_env_setting('DJANGO_ALLOWED_HOSTS') else ['http://127.0.0.1:8000', 'localhost']
+
+# // For local development, you might want to allow localhost
+# http://127.0.0.1:8000
 
 
 # Application definition
@@ -157,7 +161,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = 'http://localhost:5173/'
 CORS_ALLOW_CREDENTIALS = True
 
 # In production, prefer explicit CORS origins via env var
@@ -185,6 +189,12 @@ if not DEBUG:
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'my-app'/'build'/'static',
+]
+
+TEMPLATES[0]['DIRS'] = [BASE_DIR / 'my-app' / 'build']
 
 # Security settings recommended for production
 if not DEBUG:
