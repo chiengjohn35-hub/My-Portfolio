@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: my-portfolio
+    env: python
+    plan: free
+    buildCommand: bash render-build.sh
+    startCommand: gunicorn backend.wsgi:application --workers 3 --bind 0.0.0.0:$PORT
