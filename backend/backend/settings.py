@@ -196,10 +196,11 @@ STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATICFILES_DIRS = [
-    BASE_DIR.parent / 'my-app' / 'build' / 'static',
+    # Vite outputs production files to `dist/` with assets under `dist/assets`.
+    BASE_DIR.parent / 'my-app' / 'dist' / 'assets',
 ]
 
-TEMPLATES[0]['DIRS'] = [BASE_DIR.parent / 'my-app' / 'build']
+TEMPLATES[0]['DIRS'] = [BASE_DIR.parent / 'my-app' / 'dist']
 
 # Security settings recommended for production
 if not DEBUG:
