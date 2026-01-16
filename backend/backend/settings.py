@@ -42,7 +42,7 @@ DEBUG = get_env_setting('DJANGO_DEBUG', default='False') == 'True'
 ALLOWED_HOSTS = get_env_setting('DJANGO_ALLOWED_HOSTS', default='').split(',') if get_env_setting('DJANGO_ALLOWED_HOSTS') else ['http://127.0.0.1:8000', 'localhost']
 
 # // For local development, you might want to allow localhost
-# http://127.0.0.1:8000
+# cd C:\Users\admin\OneDrive\Desktop\PorPowerShell -ExecutionPolicy Bypass -NoProfile -Command "cd 'C:\\Users\\admin\\OneDrive\\Desktop\\Portfolio\\my-app'; npm install; npm run build"
 
 
 # Application definition
@@ -161,8 +161,13 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ALL_ORIGINS = 'http://localhost:5173/'
 CORS_ALLOW_CREDENTIALS = True
+# In development allow the local React dev server; use booleans for this setting
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+    CORS_ALLOWED_ORIGINS = ['http://localhost:5173']
+else:
+    CORS_ALLOW_ALL_ORIGINS = False
 
 # In production, prefer explicit CORS origins via env var
 if not DEBUG:
@@ -191,10 +196,10 @@ STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'my-app'/'build'/'static',
+    BASE_DIR.parent / 'my-app' / 'build' / 'static',
 ]
 
-TEMPLATES[0]['DIRS'] = [BASE_DIR / 'my-app' / 'build']
+TEMPLATES[0]['DIRS'] = [BASE_DIR.parent / 'my-app' / 'build']
 
 # Security settings recommended for production
 if not DEBUG:
