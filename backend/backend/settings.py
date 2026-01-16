@@ -39,12 +39,10 @@ if not SECRET_KEY:
 # DEBUG should be explicitly set to 'True' in development via env
 DEBUG = get_env_setting('DJANGO_DEBUG', default='False') == 'True'
 
-ALLOWED_HOSTS = get_env_setting('DJANGO_ALLOWED_HOSTS', default='').split(',') if get_env_setting('DJANGO_ALLOWED_HOSTS') else ['http://127.0.0.1:8000', 'localhost']
+ALLOWED_HOSTS = get_env_setting('DJANGO_ALLOWED_HOSTS', default='').split(',') if get_env_setting('DJANGO_ALLOWED_HOSTS') else ['AxInstSVc.onrender.com']
 
 # // For local development, you might want to allow localhost
-# cd C:\Users\admin\OneDrive\Desktop\PorPowerShell -ExecutionPolicy Bypass -NoProfile -Command "cd 'C:\\Users\\admin\\OneDrive\\Desktop\\Portfolio\\my-app'; npm install; npm run build"
-
-
+# cd C:\Users\admin\OneDrive\Desktop\Portfolio\my-app; npm install; npm run build
 # Application definition
 
 INSTALLED_APPS = [
