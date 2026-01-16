@@ -1,0 +1,13 @@
+# Repository-level ignores
+# Ignore backend sqlite database and local env files
+/backend/db.sqlite3
+.env
+.env.*
+
+# Ignore backend local env
+backend/.env
+backend/.env.*
+
+# Node artifacts (handled in my-app/.gitignore too)
+node_modules/
+dist/
