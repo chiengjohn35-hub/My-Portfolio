@@ -170,7 +170,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/assets/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -231,7 +231,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATICFILES_DIRS = [
     # Vite outputs production files to `dist/` with assets under `dist/assets`.
+    # Also include the `dist` root in case some build files (index-*.js/css) are at the root.
     BASE_DIR.parent / 'my-app' / 'dist' / 'assets',
+    BASE_DIR.parent / 'my-app' / 'dist',
 ]
 
 TEMPLATES[0]['DIRS'] = [BASE_DIR.parent / 'my-app' / 'dist']
