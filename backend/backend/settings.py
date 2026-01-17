@@ -39,7 +39,17 @@ if not SECRET_KEY:
 # DEBUG should be explicitly set to 'True' in development via env
 DEBUG = get_env_setting('DJANGO_DEBUG', default='False') == 'True'
 
-ALLOWED_HOSTS = get_env_setting('DJANGO_ALLOWED_HOSTS', default='').split(',') if get_env_setting('DJANGO_ALLOWED_HOSTS') else ['AxInstSVc.onrender.com']
+SECRET_KEY = 'Django12345SecretKey!'
+
+allowed = get_env_setting('DJANGO_ALLOWED_HOSTS', default=None)
+if allowed:
+    ALLOWED_HOSTS = [h.strip() for h in allowed.split(',') if h.strip()]
+else:
+    # In DEBUG allow localhost for local development; in production require explicit setting
+    if DEBUG:
+        ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+    else:
+        raise ImproperlyConfigured('Set the DJANGO_ALLOWED_HOSTS environment variable for production')
 
 # // For local development, you might want to allow localhost
 # cd C:\Users\admin\OneDrive\Desktop\Portfolio\my-app; npm install; npm run build

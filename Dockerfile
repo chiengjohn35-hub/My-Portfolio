@@ -16,4 +16,4 @@ RUN python backend/manage.py collectstatic --noinput || true
 ENV PYTHONUNBUFFERED=1
 
 # Run gunicorn from the 'backend' package
-CMD ["gunicorn","backend.wsgi:application","--chdir","backend","--bind","0.0.0.0:8000","--workers","1"]
+CMD gunicorn backend.wsgi:application --chdir backend --bind 0.0.0.0:${PORT:-8000} --workers 1
