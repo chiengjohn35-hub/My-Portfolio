@@ -26,8 +26,11 @@ COPY . /app
 # Copy built frontend from node builder into the image
 COPY --from=node_builder /app/my-app/dist /app/my-app/dist
 
-# Collect static files
-RUN python backend/manage.py collectstatic --noinput || true
+# Add an entrypoint that will run migrations and collectstatic at container start
+COPY docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh
+
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
 ENV PYTHONUNBUFFERED=1
 
