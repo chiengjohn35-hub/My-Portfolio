@@ -2,6 +2,32 @@ services:
   - type: web
     name: my-portfolio
     env: python
-    plan: free
-    buildCommand: bash render-build.sh
-    startCommand: gunicorn backend.wsgi:application --workers 3 --bind 0.0.0.0:$PORT
+    branch: main
+    buildCommand: |
+      pip install -r requirements.txt
+      cd my-app
+      npm ci
+      npm run build
+      cd ..
+      python backend/manage.py collectstatic --noinput
+      python backend/manage.py migrate
+    startCommand: gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT
+    instanceType: starter
+    envVars:
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: "my-portfolio.onrender.com"
+      - key: CORS_ALLOWED_ORIGINS
+        value: "https://my-portfolio.onrender.com"
+      # IMPORTANT: set `DJANGO_SECRET_KEY` and other sensitive secrets via the Render dashboard, not in repo
+
+
+
+    services:
+  - name: My Portfolio
+    env: python
+    branch: main
+    buildCommand: "pip install -r requirements.txt && cd my-app && npm ci && npm run build && cd .. && python backend/manage.py collectstatic --noinput && python backend/manage.py migrate"
+    startCommand: "gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT"
+    instanceType: starter
