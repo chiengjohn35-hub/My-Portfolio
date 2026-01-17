@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 import os
+import logging
 from pathlib import Path
+from urllib.parse import urlsplit
 from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -187,8 +189,26 @@ else:
 if not DEBUG:
     cors_origins = os.environ.get('CORS_ALLOWED_ORIGINS')
     if cors_origins:
+        # Parse and sanitize origins: strip whitespace, remove trailing slashes
+        # and strip any path component (origins should be scheme://host[:port])
+        origins = []
+        for origin in cors_origins.split(','):
+            origin = origin.strip()
+            if not origin:
+                continue
+            parsed = urlsplit(origin)
+            # If path present (e.g., http://localhost:5173/), drop it and reconstruct origin
+            if parsed.scheme and parsed.netloc:
+                clean = f"{parsed.scheme}://{parsed.netloc}"
+            elif parsed.netloc:
+                # missing scheme, assume https
+                clean = f"https://{parsed.netloc}"
+            else:
+                # fallback: strip trailing slash
+                clean = origin.rstrip('/')
+            origins.append(clean)
         CORS_ALLOW_ALL_ORIGINS = False
-        CORS_ALLOWED_ORIGINS = cors_origins.split(',')
+        CORS_ALLOWED_ORIGINS = origins
 
 # Email configuration (example using console backend for development)
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
