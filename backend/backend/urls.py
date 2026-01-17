@@ -17,10 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
+from django.conf import settings
+from django.views.static import serve
 
 urlpatterns = [
     path('secure-admin-9x3k/', admin.site.urls),
     path('api/', include('api.urls')),
+    # Serve compiled frontend assets from STATIC_ROOT at /assets/ (quick production fix)
+    path('assets/<path:path>', serve, {'document_root': settings.STATIC_ROOT}),
     path('', TemplateView.as_view(template_name='index.html') ),  # Serve React app for the root URL
 ]
 
