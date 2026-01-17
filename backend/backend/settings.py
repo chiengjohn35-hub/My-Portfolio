@@ -12,9 +12,14 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 import logging
+import mimetypes
 from pathlib import Path
 from urllib.parse import urlsplit
 from django.core.exceptions import ImproperlyConfigured
+
+# Some minimal container images lack a system mime.types database; ensure common types are registered
+mimetypes.add_type('text/css', '.css')
+mimetypes.add_type('application/javascript', '.js')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
