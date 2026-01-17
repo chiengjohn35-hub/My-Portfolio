@@ -31,15 +31,16 @@ def get_env_setting(name, default=None, required=False):
 
 SECRET_KEY = get_env_setting('DJANGO_SECRET_KEY', default=None, required=False)
 
-# If SECRET_KEY is not set, and we're in a development environment, fall back to a insecure key.
-if not SECRET_KEY:
-    # WARNING: this fallback should only be used for local development.
-    SECRET_KEY = 'local-dev-secret-key--please-set-DJANGO_SECRET_KEY-in-prod'
-
 # DEBUG should be explicitly set to 'True' in development via env
 DEBUG = get_env_setting('DJANGO_DEBUG', default='False') == 'True'
 
-SECRET_KEY = 'Django12345SecretKey!'
+# If SECRET_KEY is not set, fall back in development; require it in production
+if not SECRET_KEY:
+    if DEBUG:
+        # WARNING: this fallback should only be used for local development.
+        SECRET_KEY = 'local-dev-secret-key--please-set-DJANGO_SECRET_KEY-in-prod'
+    else:
+        raise ImproperlyConfigured('Set the DJANGO_SECRET_KEY environment variable for production')
 
 allowed = get_env_setting('DJANGO_ALLOWED_HOSTS', default=None)
 if allowed:
@@ -51,6 +52,9 @@ else:
     else:
         raise ImproperlyConfigured('Set the DJANGO_ALLOWED_HOSTS environment variable for production')
 
+
+
+# allow hosts for deployment
 # // For local development, you might want to allow localhost
 # cd C:\Users\admin\OneDrive\Desktop\Portfolio\my-app; npm install; npm run build
 # Application definition
@@ -114,18 +118,18 @@ DATABASES = {
 # If a DATABASE_URL is provided (e.g. postgres://user:pass@host:port/dbname), parse it
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if DATABASE_URL:
-    import urllib.parse as urlparse
-    url = urlparse.urlparse(DATABASE_URL)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': url.path[1:],
-            'USER': url.username,
-            'PASSWORD': url.password,
-            'HOST': url.hostname,
-            'PORT': url.port or '',
-        }
-    }
+    # Use dj-database-url for robust parsing and support for SSL/query params
+    try:
+        import dj_database_url
+    except ImportError:
+        raise ImproperlyConfigured('dj-database-url is required to parse DATABASE_URL; add it to requirements')
+
+    # Parse and set database config; require SSL in production unless explicitly disabled
+    db_config = dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=not DEBUG)
+    # Ensure ENGINE key exists
+    if 'ENGINE' not in db_config:
+        db_config['ENGINE'] = 'django.db.backends.postgresql'
+    DATABASES['default'] = db_config
 
 
 # Password validation
