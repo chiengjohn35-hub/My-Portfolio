@@ -59,7 +59,7 @@ else:
     else:
         # Quick fallback for fast production deploys: allow all hosts if env var is missing.
         # NOTE: This is a temporary, less-secure setting — replace with explicit hosts ASAP.
-        ALLOWED_HOSTS = [ 'https://portfolio-ivi8.onrender.com' ]
+        ALLOWED_HOSTS = [ '*']
 
 
 
